@@ -17,8 +17,6 @@ app.get(/.*/, (_, res) => {
     res.sendFile(path.resolve(_dirname, 'frontend', 'dist', 'index.html'));
 });
 
-
-
 app.use('/api/payment/', paymentRouter);
 
 app.listen(PORT, () => {
