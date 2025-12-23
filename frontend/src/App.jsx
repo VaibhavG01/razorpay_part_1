@@ -33,15 +33,17 @@ const App = () => {
 
       // 2️⃣ Razorpay Options
       const paymentObject = new window.Razorpay({
+
         key: "rzp_test_RmOX6fSIDBulsx",
         amount: order.amount,
         currency: order.currency,
         order_id: order.id, // ✅ CORRECT
 
         handler: async function (response) {
-          console.log("Order ID:", response.razorpay_order_id);
-          console.log("Payment ID:", response.razorpay_payment_id);
-          console.log("Signature:", response.razorpay_signature);
+          
+          // console.log("Order ID:", response.razorpay_order_id);
+          // console.log("Payment ID:", response.razorpay_payment_id);
+          // console.log("Signature:", response.razorpay_signature);
 
           // 3️⃣ Verify payment
           const verifyRes = await axios.post(

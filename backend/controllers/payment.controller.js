@@ -49,8 +49,8 @@ exports.verifyPayment = async (req, res) => {
 
     // Implementation for payment verification will go here
     const { order_id, payment_id, signature } = req.body;
-    
-    console.log(order_id, payment_id, signature);
+
+    // console.log(order_id, payment_id, signature);
     
     const secret = process.env.RAZORPAY_KEY_SECRET;
 
