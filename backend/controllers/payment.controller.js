@@ -2,7 +2,8 @@ const { createRazorpayInstance } = require('../config/razorpay.config');
 
 const crypto = require('crypto');
 const razorpayInstance = createRazorpayInstance();
-
+const dotenv = require('dotenv');
+dotenv.config();
 exports.createOrder = async (req, res) => {
     const { courseId, amount } = req.body;
 
@@ -48,6 +49,8 @@ exports.verifyPayment = async (req, res) => {
 
     // Implementation for payment verification will go here
     const { order_id, payment_id, signature } = req.body;
+    
+    console.log(order_id, payment_id, signature);
     
     const secret = process.env.RAZORPAY_KEY_SECRET;
 

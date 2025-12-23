@@ -18,54 +18,57 @@ const App = () => {
     });
   }
 
-  const onPayment = async (price, itemName) => {
-
+  const onPayment = async () => {
     try {
-      // Creat Options                      
-      const options = {
-        courseId: 1,
-        amount: 100
-      };
-      // Create Order
-      const res = await axios.post("http://localhost:5000/api/payment/createOrder/", options);
-      const data = res.data;
-
-      // console.log("Order Created", data);
-
-      // Payment Object
-      const paymentObject = new (window).Razorpay({
-        key: "rzp_test_RmOX6fSIDBulsx",
-        order_id: data.id,
-        ...data,
-        handler: function (response) {
-          // console.log("Payment Success (this from Handler side)", response);
-          
-          const option2 = {
-            order_id: data.id,
-            payment_id: response.razorpay_payment_id,
-            signature: response.razorpay_signature
-          };
-
-          axios.post("http://localhost:5000/api/payment/verifyPayment/", option2)
-
-          // console.log("Payment verified Successfully", res.data);
-
-          if (res.data.success) {
-            alert(`Payment Successful done By ${courses.instructor}`);
-          }
-          else {
-            alert("Payment Failed");
-          }
+      // 1️⃣ Create Order
+      const res = await axios.post(
+        "http://localhost:5000/api/payment/createOrder",
+        {
+          courseId: 1,
+          amount: 100,
         }
+      );
+
+      const order = res.data.order; // ✅ IMPORTANT
+
+      // 2️⃣ Razorpay Options
+      const paymentObject = new window.Razorpay({
+        key: "rzp_test_RmOX6fSIDBulsx",
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.id, // ✅ CORRECT
+
+        handler: async function (response) {
+          console.log("Order ID:", response.razorpay_order_id);
+          console.log("Payment ID:", response.razorpay_payment_id);
+          console.log("Signature:", response.razorpay_signature);
+
+          // 3️⃣ Verify payment
+          const verifyRes = await axios.post(
+            "http://localhost:5000/api/payment/verifyPayment",
+            {
+              order_id: response.razorpay_order_id,
+              payment_id: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            }
+          );
+
+          if (verifyRes.data.success) {
+            alert("Payment Successful ✅");
+          } else {
+            alert("Payment Verification Failed ❌");
+          }
+        },
       });
-      
+
       paymentObject.open();
 
     } catch (error) {
-      console.log("Error in payment", error);
+      console.error("Payment Error:", error);
+      alert("Payment Failed ❌");
     }
-
   };
+
 
   useEffect(() => {
     loadScript('https://checkout.razorpay.com/v1/checkout.js');
