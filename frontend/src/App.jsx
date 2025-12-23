@@ -30,7 +30,7 @@ const App = () => {
       const res = await axios.post("http://localhost:5000/api/payment/createOrder/", options);
       const data = res.data;
 
-      console.log("Order Created", data);
+      // console.log("Order Created", data);
 
       // Payment Object
       const paymentObject = new (window).Razorpay({
@@ -38,7 +38,7 @@ const App = () => {
         order_id: data.id,
         ...data,
         handler: function (response) {
-          console.log("Payment Success (this from Handler side)", response);
+          // console.log("Payment Success (this from Handler side)", response);
           
           const option2 = {
             order_id: data.id,
@@ -48,7 +48,7 @@ const App = () => {
 
           axios.post("http://localhost:5000/api/payment/verifyPayment/", option2)
 
-          console.log("Payment verified Successfully", res.data);
+          // console.log("Payment verified Successfully", res.data);
 
           if (res.data.success) {
             alert(`Payment Successful done By ${courses.instructor}`);
